@@ -1,0 +1,5 @@
+/home/pyro/Projects/snake-game/snake-game/obj/Debug/net9.0/snake-game.csproj.AssemblyReference.cache
+/home/pyro/Projects/snake-game/snake-game/obj/Debug/net9.0/snake-game.GeneratedMSBuildEditorConfig.editorconfig
+/home/pyro/Projects/snake-game/snake-game/obj/Debug/net9.0/snake-game.AssemblyInfoInputs.cache
+/home/pyro/Projects/snake-game/snake-game/obj/Debug/net9.0/snake-game.AssemblyInfo.cs
+/home/pyro/Projects/snake-game/snake-game/obj/Debug/net9.0/snake-game.csproj.CoreCompileInputs.cache

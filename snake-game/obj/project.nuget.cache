@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "dgSpecHash": "mbtUBRy8J7Y=",
+  "success": true,
+  "projectFilePath": "/home/pyro/Projects/snake-game/snake-game/snake-game.csproj",
+  "expectedPackageFiles": [
+    "/home/pyro/.nuget/packages/alimer.bindings.sdl/3.9.5/alimer.bindings.sdl.3.9.5.nupkg.sha512",
+    "/home/pyro/.nuget/packages/sdl2-cs-rolling/2018.11.1/sdl2-cs-rolling.2018.11.1.nupkg.sha512"
+  ],
+  "logs": []
+}

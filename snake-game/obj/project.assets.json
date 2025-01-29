@@ -1,0 +1,162 @@
+{
+  "version": 3,
+  "targets": {
+    "net9.0": {
+      "Alimer.Bindings.SDL/3.9.5": {
+        "type": "package",
+        "compile": {
+          "lib/net9.0/Alimer.Bindings.SDL.dll": {}
+        },
+        "runtime": {
+          "lib/net9.0/Alimer.Bindings.SDL.dll": {}
+        },
+        "runtimeTargets": {
+          "runtimes/linux-x64/native/libSDL3.so": {
+            "assetType": "native",
+            "rid": "linux-x64"
+          },
+          "runtimes/osx/native/libSDL3.dylib": {
+            "assetType": "native",
+            "rid": "osx"
+          },
+          "runtimes/win-arm64/native/SDL3.dll": {
+            "assetType": "native",
+            "rid": "win-arm64"
+          },
+          "runtimes/win-x64/native/SDL3.dll": {
+            "assetType": "native",
+            "rid": "win-x64"
+          }
+        }
+      },
+      "SDL2-CS-Rolling/2018.11.1": {
+        "type": "package",
+        "compile": {
+          "lib/netstandard2.0/SDL2-CS.dll": {
+            "related": ".dll.config;.pdb"
+          }
+        },
+        "runtime": {
+          "lib/netstandard2.0/SDL2-CS.dll": {
+            "related": ".dll.config;.pdb"
+          }
+        }
+      }
+    }
+  },
+  "libraries": {
+    "Alimer.Bindings.SDL/3.9.5": {
+      "sha512": "0ztqJF/lU4FVYmRjtH8k32aJvO5lvTQL9bD/j53QdGLbdOVqHtzkHRcyPokDLxGoElL1f5xaSJwM16KSXDZ3FQ==",
+      "type": "package",
+      "path": "alimer.bindings.sdl/3.9.5",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "README.md",
+        "alimer.bindings.sdl.3.9.5.nupkg.sha512",
+        "alimer.bindings.sdl.nuspec",
+        "lib/net8.0/Alimer.Bindings.SDL.dll",
+        "lib/net9.0/Alimer.Bindings.SDL.dll",
+        "runtimes/linux-x64/native/libSDL3.so",
+        "runtimes/osx/native/libSDL3.dylib",
+        "runtimes/win-arm64/native/SDL3.dll",
+        "runtimes/win-x64/native/SDL3.dll"
+      ]
+    },
+    "SDL2-CS-Rolling/2018.11.1": {
+      "sha512": "fT4TGBy3ttSu49c6cBYzo4Wz2zAlEIXRbjAI794buNOvNVWWNF7TalkRpbQ0wWrpjnjbw7lJl99zaAQyGd9YJw==",
+      "type": "package",
+      "path": "sdl2-cs-rolling/2018.11.1",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "lib/net461/SDL2-CS.dll",
+        "lib/net461/SDL2-CS.dll.config",
+        "lib/net461/SDL2-CS.pdb",
+        "lib/netstandard2.0/SDL2-CS.dll",
+        "lib/netstandard2.0/SDL2-CS.dll.config",
+        "lib/netstandard2.0/SDL2-CS.pdb",
+        "sdl2-cs-rolling.2018.11.1.nupkg.sha512",
+        "sdl2-cs-rolling.nuspec"
+      ]
+    }
+  },
+  "projectFileDependencyGroups": {
+    "net9.0": [
+      "Alimer.Bindings.SDL >= 3.9.5",
+      "SDL2-CS-Rolling >= 2018.11.1"
+    ]
+  },
+  "packageFolders": {
+    "/home/pyro/.nuget/packages/": {}
+  },
+  "project": {
+    "version": "1.0.0",
+    "restore": {
+      "projectUniqueName": "/home/pyro/Projects/snake-game/snake-game/snake-game.csproj",
+      "projectName": "snake-game",
+      "projectPath": "/home/pyro/Projects/snake-game/snake-game/snake-game.csproj",
+      "packagesPath": "/home/pyro/.nuget/packages/",
+      "outputPath": "/home/pyro/Projects/snake-game/snake-game/obj/",
+      "projectStyle": "PackageReference",
+      "configFilePaths": [
+        "/home/pyro/.nuget/NuGet/NuGet.Config"
+      ],
+      "originalTargetFrameworks": [
+        "net9.0"
+      ],
+      "sources": {
+        "https://api.nuget.org/v3/index.json": {}
+      },
+      "frameworks": {
+        "net9.0": {
+          "targetAlias": "net9.0",
+          "projectReferences": {}
+        }
+      },
+      "warningProperties": {
+        "warnAsError": [
+          "NU1605"
+        ]
+      },
+      "restoreAuditProperties": {
+        "enableAudit": "true",
+        "auditLevel": "low",
+        "auditMode": "direct"
+      },
+      "SdkAnalysisLevel": "9.0.100"
+    },
+    "frameworks": {
+      "net9.0": {
+        "targetAlias": "net9.0",
+        "dependencies": {
+          "Alimer.Bindings.SDL": {
+            "target": "Package",
+            "version": "[3.9.5, )"
+          },
+          "SDL2-CS-Rolling": {
+            "target": "Package",
+            "version": "[2018.11.1, )"
+          }
+        },
+        "imports": [
+          "net461",
+          "net462",
+          "net47",
+          "net471",
+          "net472",
+          "net48",
+          "net481"
+        ],
+        "assetTargetFallback": true,
+        "warn": true,
+        "frameworkReferences": {
+          "Microsoft.NETCore.App": {
+            "privateAssets": "all"
+          }
+        },
+        "runtimeIdentifierGraphPath": "/home/pyro/.dotnet/sdk/9.0.101/PortableRuntimeIdentifierGraph.json"
+      }
+    }
+  }
+}
