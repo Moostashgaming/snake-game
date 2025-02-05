@@ -2,8 +2,8 @@ namespace snake_game;
 
 public struct Food()
 {
-    public uint X { get; set; }
-    public uint Y { get; set; }
+    public int X { get; set; }
+    public int Y { get; set; }
     
     public bool Eaten { get; set; } = false;
 }

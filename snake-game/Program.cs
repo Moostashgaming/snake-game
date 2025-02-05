@@ -25,10 +25,18 @@ namespace snake_game
             for (byte i = 0; i <= gameState.Food.Count - 1; i++)
                 gameState.Food[i] = gameState.SpawnFood(gameState.Food[i]);
             
+            l_pause:
             while (gameState.Running)
             {
+                // TODO: Poll inputs more often than frames
                 gameState = SDLHelpers.EventListen(gameState);
-                
+
+                if (gameState.Paused)
+                {
+                    SDLHelpers.Render(window, renderer, gameState);
+                    goto l_pause;
+                }
+
                 gameState.Snakes[0] = gameState.Update(gameState.Snakes[0]);
                 SDLHelpers.Render(window, renderer, gameState);
                 
