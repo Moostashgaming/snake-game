@@ -11,8 +11,8 @@ namespace snake_game
                     out IntPtr renderer,
                     640,
                     480,
-                    25,
-                    25
+                    50,
+                    50
                 );
 
             GameState gameState = new GameState(window);
@@ -24,6 +24,8 @@ namespace snake_game
 
             for (byte i = 0; i <= gameState.Food.Count - 1; i++)
                 gameState.Food[i] = gameState.SpawnFood(gameState.Food[i]);
+            
+            
             
             l_pause:
             while (gameState.Running)
@@ -37,7 +39,7 @@ namespace snake_game
                     goto l_pause;
                 }
 
-                gameState.Snakes[0] = gameState.Update(gameState.Snakes[0]);
+                gameState.Update(gameState.Snakes);
                 SDLHelpers.Render(window, renderer, gameState);
                 
                 Thread.Sleep(33);

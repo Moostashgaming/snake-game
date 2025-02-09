@@ -101,19 +101,20 @@ public class SDLHelpers
             if (f.Eaten != true)
                 DrawFood(window, renderer, f);
 
-        foreach (TurnSegment t in gameState.Snakes[0].TurnSegments)
-        {
-            var rect = new SDL_Rect()
-            {
-                h = (int)window.GridCellHeight,
-                w = (int)window.GridCellWidth,
-                x = (int)(t.X * window.GridCellWidth) + window.GridOffsetX,
-                y = (int)(t.Y * window.GridCellHeight) + window.GridOffsetY
-            };
-
-            SDL_SetRenderDrawColor(renderer, 195, 63, 182, 255);
-            SDL_RenderFillRect(renderer, ref rect);
-        }
+        // foreach (TurnSegment t in gameState.Snakes[0].TurnSegments)
+        // {
+        //     var rect = new SDL_Rect()
+        //     {
+        //         h = (int)window.GridCellHeight,
+        //         w = (int)window.GridCellWidth,
+        //         x = (int)(t.X * window.GridCellWidth) + window.GridOffsetX,
+        //         y = (int)(t.Y * window.GridCellHeight) + window.GridOffsetY
+        //     };
+        //     SDL_SetRenderDrawColor(renderer, 195, 63, 182, 255);
+        //
+        //     SDL_SetRenderDrawColor(renderer, 195, 63, 182, 255);
+        //     SDL_RenderFillRect(renderer, ref rect);
+        // }
 
         // Update render surface
         SDL_RenderPresent(renderer);
@@ -156,7 +157,6 @@ public class SDLHelpers
 
     private static void DrawSnake(Window window, IntPtr renderer, Snake snake)
     {
-        // TODO: Watch these calculations (uInts could cause problems)
         // Draw the snake's head
         var drawPart = new SDL_Rect()
         {
@@ -237,13 +237,13 @@ public class SDLHelpers
             x = (int)((snake.HeadDirection switch
             {
                 Snake.Direction.Left => snake.X + 1,
-                Snake.Direction.Right => snake.X - (Math.Abs(snake.X - snake.TurnSegments[0].X)),
+                Snake.Direction.Right => snake.X - (Math.Abs(snake.X - snake.TurnSegments[^1].X)),
                 _ => snake.X
             } * window.GridCellWidth) + window.GridOffsetX),
             y = (int)((snake.HeadDirection switch
             {
                 Snake.Direction.Up => snake.Y + 1,
-                Snake.Direction.Down => snake.Y - (Math.Abs(snake.Y - snake.TurnSegments[0].Y)),
+                Snake.Direction.Down => snake.Y - (Math.Abs(snake.Y - snake.TurnSegments[^1].Y)),
                 _ => snake.Y
             } * window.GridCellHeight) + window.GridOffsetY),
         };
@@ -291,7 +291,7 @@ public class SDLHelpers
                 } * window.GridCellHeight) + window.GridOffsetY),
             };
 
-            SDL_SetRenderDrawColor(renderer, 0, 0, 255, 255);
+            SDL_SetRenderDrawColor(renderer, 48, 161, 56, 255);
 
             SDL_RenderFillRect(
                 renderer,
@@ -326,7 +326,7 @@ public class SDLHelpers
             } * window.GridCellHeight) + window.GridOffsetY)
         };
         
-        SDL_SetRenderDrawColor(renderer, 200, 200, 0, 255);
+        SDL_SetRenderDrawColor(renderer, 48, 161, 56, 255);
 
         SDL_RenderFillRect(
             renderer,
