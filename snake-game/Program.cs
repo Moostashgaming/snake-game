@@ -11,8 +11,8 @@ namespace snake_game
                     out IntPtr renderer,
                     640,
                     480,
-                    50,
-                    50
+                    40,
+                    40
                 );
 
             GameState gameState = new GameState(window);
@@ -36,6 +36,7 @@ namespace snake_game
                 if (gameState.Paused)
                 {
                     SDLHelpers.Render(window, renderer, gameState);
+                    Thread.Sleep(11);
                     goto l_pause;
                 }
 
