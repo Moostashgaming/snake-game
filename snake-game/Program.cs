@@ -1,6 +1,4 @@
-﻿using SDL2;
-
-namespace snake_game
+﻿namespace snake_game
 {
     class Program
     {
@@ -17,15 +15,9 @@ namespace snake_game
 
             GameState gameState = new GameState(window);
 
-            gameState.Food.Add(new Food());
-            gameState.Snakes.Add(new Snake());
-
-            gameState.Snakes[0] = gameState.SpawnSnake(gameState.Snakes[0], 2);
-
-            for (byte i = 0; i <= gameState.Food.Count - 1; i++)
-                gameState.Food[i] = gameState.SpawnFood(gameState.Food[i]);
-            
-            
+            gameState.Snakes.Add(gameState.SpawnSnake(2));
+            gameState.Snakes.Add(gameState.SpawnSnake(2));
+            gameState.Food.Add(gameState.SpawnFood(0, 0));
             
             l_pause:
             while (gameState.Running)
@@ -40,7 +32,7 @@ namespace snake_game
                     goto l_pause;
                 }
 
-                gameState.Update(gameState.Snakes);
+                gameState.Update();
                 SDLHelpers.Render(window, renderer, gameState);
                 
                 Thread.Sleep(33);

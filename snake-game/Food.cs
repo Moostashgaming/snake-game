@@ -1,9 +1,9 @@
 namespace snake_game;
 
-public struct Food()
+public readonly struct Food()
 {
-    public int X { get; set; }
-    public int Y { get; set; }
+    public int X { get; init; }
+    public int Y { get; init; }
     
-    public bool Eaten { get; set; } = false;
+    public bool Branching { get; init; } = false;
 }

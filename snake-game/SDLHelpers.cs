@@ -95,26 +95,30 @@ public class SDLHelpers
         DrawGrid(window, renderer);
 
         foreach (Snake s in gameState.Snakes)
+        {
             DrawSnake(window, renderer, s);
 
-        foreach (Food f in gameState.Food)
-            if (f.Eaten != true)
-                DrawFood(window, renderer, f);
+            foreach (TurnSegment t in s.TurnSegments)
+            {
+                var rect = new SDL_Rect()
+                {
+                    h = (int)window.GridCellHeight,
+                    w = (int)window.GridCellWidth,
+                    x = (int)(t.X * window.GridCellWidth) + window.GridOffsetX,
+                    y = (int)(t.Y * window.GridCellHeight) + window.GridOffsetY
+                };
+                SDL_SetRenderDrawColor(renderer, 195, 63, 182, 255);
 
-        // foreach (TurnSegment t in gameState.Snakes[0].TurnSegments)
-        // {
-        //     var rect = new SDL_Rect()
-        //     {
-        //         h = (int)window.GridCellHeight,
-        //         w = (int)window.GridCellWidth,
-        //         x = (int)(t.X * window.GridCellWidth) + window.GridOffsetX,
-        //         y = (int)(t.Y * window.GridCellHeight) + window.GridOffsetY
-        //     };
-        //     SDL_SetRenderDrawColor(renderer, 195, 63, 182, 255);
-        //
-        //     SDL_SetRenderDrawColor(renderer, 195, 63, 182, 255);
-        //     SDL_RenderFillRect(renderer, ref rect);
-        // }
+                SDL_SetRenderDrawColor(renderer, 195, 63, 182, 255);
+                SDL_RenderFillRect(renderer, ref rect);
+            }
+        }
+
+        foreach (Food f in gameState.Food)
+            DrawFood(window, renderer, f);
+        
+       
+
 
         // Update render surface
         SDL_RenderPresent(renderer);
@@ -345,7 +349,10 @@ public class SDLHelpers
                       ((window.WindowWidthHeight.Height % window.GridCellHeight) / 2))
         };
 
-        SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
+        if (food.Branching)
+            SDL_SetRenderDrawColor(renderer, 145, 44, 198, 255);
+        else
+            SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
 
         SDL_RenderFillRect(
             renderer,

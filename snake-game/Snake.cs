@@ -18,9 +18,7 @@ public struct Snake()
 
     public float SnakeStep { get; set; } = 0;
     
-    public bool Alive { get; set; } = false;
-
     public List<TurnSegment> TurnSegments { get; } = [];
 
-    public Direction HeadDirection { get; set; }
+    public Direction HeadDirection { get; set; } = Direction.Unset;
 }
