@@ -1,6 +1,6 @@
 namespace snake_game;
 
-public struct Snake()
+public class Snake()
 {
     public enum Direction
     {
@@ -18,7 +18,24 @@ public struct Snake()
 
     public float SnakeStep { get; set; } = 0;
     
-    public List<TurnSegment> TurnSegments { get; } = [];
+    public float Speed { get; set; }
+    
+    public List<TurnSegment> TurnSegments { get; private set; } = [];
 
     public Direction HeadDirection { get; set; } = Direction.Unset;
+
+    public Snake Copy()
+    {
+        Snake s = (Snake)this.MemberwiseClone();
+            
+        s.TurnSegments = s.TurnSegments.ConvertAll(segment => new TurnSegment()
+        {
+            X = segment.X,
+            Y = segment.Y,
+            ToDirection = segment.ToDirection,
+            FromDirection = segment.FromDirection
+        });
+
+        return s;
+    }
 }

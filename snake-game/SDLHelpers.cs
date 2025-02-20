@@ -98,20 +98,18 @@ public class SDLHelpers
         {
             DrawSnake(window, renderer, s);
 
-            foreach (TurnSegment t in s.TurnSegments)
-            {
-                var rect = new SDL_Rect()
-                {
-                    h = (int)window.GridCellHeight,
-                    w = (int)window.GridCellWidth,
-                    x = (int)(t.X * window.GridCellWidth) + window.GridOffsetX,
-                    y = (int)(t.Y * window.GridCellHeight) + window.GridOffsetY
-                };
-                SDL_SetRenderDrawColor(renderer, 195, 63, 182, 255);
-
-                SDL_SetRenderDrawColor(renderer, 195, 63, 182, 255);
-                SDL_RenderFillRect(renderer, ref rect);
-            }
+            // foreach (TurnSegment t in s.TurnSegments)
+            // {
+            //     var rect = new SDL_Rect()
+            //     {
+            //         h = (int)window.GridCellHeight,
+            //         w = (int)window.GridCellWidth,
+            //         x = (int)(t.X * window.GridCellWidth) + window.GridOffsetX,
+            //         y = (int)(t.Y * window.GridCellHeight) + window.GridOffsetY
+            //     };
+            //     SDL_SetRenderDrawColor(renderer, 195, 63, 182, 255);
+            //     SDL_RenderFillRect(renderer, ref rect);
+            // }
         }
 
         foreach (Food f in gameState.Food)

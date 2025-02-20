@@ -23,6 +23,11 @@ public class GameState(Window window)
     /// <param name="tileInset">How many tiles to inset the snake's spawn area from the edge</param>
     public Snake SpawnSnake(uint tileInset)
     {
+        if (RunningWindow.GridWidthHeight.Width <= tileInset
+            ||
+            RunningWindow.GridWidthHeight.Height <= tileInset)
+            tileInset = 0;
+
         Food.Clear();
         InputBuffer.Clear();
 
@@ -30,38 +35,62 @@ public class GameState(Window window)
 
         return new Snake()
         {
-            Length = 10,
+            Length = 1,
             X = rand.Next((int)tileInset, (int)((RunningWindow.GridWidthHeight.Width + 1) - tileInset)),
-            Y = rand.Next((int)tileInset, (int)((RunningWindow.GridWidthHeight.Height + 1) - tileInset))
+            Y = rand.Next((int)tileInset, (int)((RunningWindow.GridWidthHeight.Height + 1) - tileInset)),
+            Speed = .7F
         };
     }
 
     public Food SpawnFood(short xInset, short yInset)
     {
+        ulong retryTimeout = 0;
+
         Random rand = new Random();
 
-        short x = (short)rand.Next(xInset, (int)RunningWindow.GridWidthHeight.Width - xInset);
-        short y = (short)rand.Next(yInset, (int)RunningWindow.GridWidthHeight.Height - yInset);
+        // Roll for branching
+        bool branching = rand.Next(0, 50) == 25;
+
+        // Branching fruit can't spawn on the corners otherwise the game is unwinnable
+        short x = (short)rand.Next(
+            branching && xInset == 0 ? 1 : xInset,
+            branching && yInset == 0
+                ? (int)RunningWindow.GridWidthHeight.Width - 1
+                : (int)RunningWindow.GridWidthHeight.Width - xInset);
+
+        short y = (short)rand.Next(
+            branching && yInset == 0 ? 1 : yInset,
+            branching && yInset == 0
+                ? (int)RunningWindow.GridWidthHeight.Height - 1
+                : (int)RunningWindow.GridWidthHeight.Height - yInset);
 
         foreach (Snake s in Snakes)
         {
-            l_retry_all:
-            l_retry_x:
+            l_retry:
+            retryTimeout++;
+
+            if (retryTimeout == 4 * (RunningWindow.GridWidthHeight.Width * RunningWindow.GridWidthHeight.Height))
+                return new Food()
+                {
+                    X = 0,
+                    Y = 0,
+                    Branching = false
+                };
+
             x = (short)rand.Next(xInset, (int)RunningWindow.GridWidthHeight.Width - xInset);
 
             if (s.X == x)
-                goto l_retry_x;
+                goto l_retry;
 
-            l_retry_y:
             y = (short)rand.Next(yInset, (int)RunningWindow.GridWidthHeight.Height - yInset);
 
             if (s.Y == y)
-                goto l_retry_y;
+                goto l_retry;
 
             // Check if the apple is on another existing apple
             foreach (Food f in Food)
                 if (x == f.X && y == f.Y)
-                    goto l_retry_all;
+                    goto l_retry;
 
             if (s.Length == 1)
                 continue;
@@ -77,7 +106,7 @@ public class GameState(Window window)
                              (y >= Math.Min(s.Y, s.Y + s.Length - 1))
                              &&
                              x == s.X))
-                            goto l_retry_all;
+                            goto l_retry;
                         break;
 
                     case Snake.Direction.Down:
@@ -86,7 +115,7 @@ public class GameState(Window window)
                              (y >= Math.Min(s.Y, s.Y - s.Length - 1))
                              &&
                              x == s.X))
-                            goto l_retry_all;
+                            goto l_retry;
                         break;
 
                     case Snake.Direction.Left:
@@ -95,7 +124,7 @@ public class GameState(Window window)
                              (x >= Math.Min(s.X, s.X + s.Length - 1))
                              &&
                              x == s.Y))
-                            goto l_retry_all;
+                            goto l_retry;
                         break;
 
                     case Snake.Direction.Right:
@@ -104,7 +133,7 @@ public class GameState(Window window)
                              (x >= Math.Min(s.X, s.X - s.Length - 1))
                              &&
                              x == s.Y))
-                            goto l_retry_all;
+                            goto l_retry;
                         break;
                 }
 
@@ -122,7 +151,7 @@ public class GameState(Window window)
                          (y >= Math.Min(s.Y, s.TurnSegments[^1].Y + Math.Abs(s.TurnSegments[^1].Y - s.Y))))
                         &&
                         x == s.X)
-                        goto l_retry_all;
+                        goto l_retry;
                     break;
 
                 case Snake.Direction.Down:
@@ -131,7 +160,7 @@ public class GameState(Window window)
                          (y >= Math.Min(s.Y, s.TurnSegments[^1].Y - Math.Abs(s.TurnSegments[^1].Y - s.Y))))
                         &&
                         x == s.X)
-                        goto l_retry_all;
+                        goto l_retry;
                     break;
 
                 case Snake.Direction.Left:
@@ -140,7 +169,7 @@ public class GameState(Window window)
                          (x >= Math.Min(s.X, s.TurnSegments[^1].X + Math.Abs(s.TurnSegments[^1].X - s.X))))
                         &&
                         y == s.Y)
-                        goto l_retry_all;
+                        goto l_retry;
                     break;
 
                 case Snake.Direction.Right:
@@ -149,7 +178,7 @@ public class GameState(Window window)
                          (x >= Math.Min(s.X, s.TurnSegments[^1].X - Math.Abs(s.TurnSegments[^1].X - s.X))))
                         &&
                         y == s.Y)
-                        goto l_retry_all;
+                        goto l_retry;
                     break;
             }
 
@@ -176,7 +205,7 @@ public class GameState(Window window)
                     &&
                     s.TurnSegments[i].Y == y
                 )
-                    goto l_retry_all;
+                    goto l_retry;
 
 
                 // Check if apple is between the two points
@@ -188,7 +217,7 @@ public class GameState(Window window)
                     s.TurnSegments[i].X == x
                 )
                 {
-                    goto l_retry_all;
+                    goto l_retry;
                 }
             }
 
@@ -206,7 +235,7 @@ public class GameState(Window window)
                         &&
                         x == s.TurnSegments[0].X)
                     {
-                        goto l_retry_all;
+                        goto l_retry;
                     }
 
                     break;
@@ -219,7 +248,7 @@ public class GameState(Window window)
                         &&
                         x == s.TurnSegments[0].X)
                     {
-                        goto l_retry_all;
+                        goto l_retry;
                     }
 
                     break;
@@ -232,7 +261,7 @@ public class GameState(Window window)
                         &&
                         y == s.TurnSegments[0].Y)
                     {
-                        goto l_retry_all;
+                        goto l_retry;
                     }
 
                     break;
@@ -245,7 +274,7 @@ public class GameState(Window window)
                         &&
                         y == s.TurnSegments[0].Y)
                     {
-                        goto l_retry_all;
+                        goto l_retry;
                     }
 
                     break;
@@ -254,8 +283,7 @@ public class GameState(Window window)
 
         return new Food()
         {
-            // Roll for branching
-            Branching = rand.Next(0, 2) == 0,
+            Branching = branching,
             X = x,
             Y = y
         };
@@ -302,10 +330,10 @@ public class GameState(Window window)
         return snake;
     }
 
-    private Snake MoveSnake(Snake.Direction d, Snake snake, float speed)
+    private Snake MoveSnake(Snake.Direction d, Snake snake)
     {
         // TODO: Make speed proportional to grid size
-        snake.SnakeStep += speed;
+        snake.SnakeStep += snake.Speed;
 
         if (snake.SnakeStep >= 1)
         {
@@ -421,17 +449,17 @@ public class GameState(Window window)
 
                 continue;
             }
-            
-            
+
+
             if ((other.TurnSegments[^1].X == snake.TurnSegments[^1].X
                  &&
                  other.TurnSegments[^1].Y == snake.TurnSegments[^1].Y)
-                && 
-                (snake.X == other.TurnSegments[^1].X 
-                 && 
+                &&
+                (snake.X == other.TurnSegments[^1].X
+                 &&
                  snake.Y == other.TurnSegments[^1].Y))
                 return false;
-                
+
             int backLen = (int)other.Length - 1;
 
             if (other.HeadDirection is Snake.Direction.Up or Snake.Direction.Down)
@@ -456,7 +484,7 @@ public class GameState(Window window)
                     other.TurnSegments[i].Y == snake.Y
                 )
                 {
-                        return true;
+                    return true;
                 }
 
                 // Check if snake's head is between the two points
@@ -544,17 +572,15 @@ public class GameState(Window window)
             if (CheckSnakeDied(Snakes[n]))
             {
                 Snakes.Clear();
-
+            
                 Snakes.Add(SpawnSnake(2));
-
+            
                 for (byte i = 0; i < Snakes.Count; i++)
                     Food.Add(SpawnFood(0, 0));
-
+            
                 return;
             }
-
-            Snake s;
-
+            
             // Check if the snake ate the food, and perform the necessary functions if it did
             for (byte i = 0; i < Food.Count; i++)
             {
@@ -562,50 +588,54 @@ public class GameState(Window window)
                 if (Food[i].X != Snakes[n].X || Food[i].Y != Snakes[n].Y)
                     continue;
 
-                s = Snakes[n];
-                s.Length++;
-                Snakes[n] = s;
-
+                Snakes[n].Length++;
+                
                 if (Food[i].Branching)
                 {
+                    // Place another snake on the board
+                    Snakes.Add(Snakes[n].Copy());
+
+                    Random rand = new Random();
+
+                    // Randomize the new snake's speed
+                    Snakes[^1].Speed = ((float) rand.Next(1, 11) / 10);
+                    
                     // Set the head direction of the new snake
-                    s.HeadDirection = Snakes[n].HeadDirection switch
+                    Snakes[^1].HeadDirection = Snakes[n].HeadDirection switch
                     {
                         Snake.Direction.Up or Snake.Direction.Down => Snake.Direction.Left,
                         Snake.Direction.Left or Snake.Direction.Right => Snake.Direction.Up
                     };
 
-                    // TODO: I think both snakes have access to the same list of turnsegments. How the genuine fuck
-                    
-                    // Place another snake on the board
-                    Snakes.Add(s);
-
-                    Snakes[^1].TurnSegments.Clear();
-                    
                     // Add a turn segment at the branching point
                     Snakes[^1].TurnSegments.Add(
-                        new TurnSegment(
-                            (uint)Snakes[n].X,
-                            (uint)Snakes[n].Y,
-                            Snakes[n].HeadDirection,
-                            s.HeadDirection)
+                        new TurnSegment
+                        {
+                            X = (uint)Snakes[n].X,
+                            Y = (uint)Snakes[n].Y,
+                            FromDirection = Snakes[n].HeadDirection,
+                            ToDirection = Snakes[^1].HeadDirection
+                        }
                     );
 
+                    
                     // Set the old snakes head direction opposite of the new one
-                    s.HeadDirection = s.HeadDirection == Snake.Direction.Left
+                    Snake.Direction newDirection = Snakes[^1].HeadDirection == Snake.Direction.Left
                         ? Snake.Direction.Right
                         : Snake.Direction.Down;
 
                     // Add a turn segment at the branching point
                     Snakes[n].TurnSegments.Add(
-                        new TurnSegment(
-                            (uint)Snakes[n].X,
-                            (uint)Snakes[n].Y,
-                            Snakes[n].HeadDirection,
-                            s.HeadDirection)
+                        new TurnSegment
+                        {
+                            X = (uint)Snakes[n].X,
+                            Y = (uint)Snakes[n].Y,
+                            FromDirection = Snakes[n].HeadDirection,
+                            ToDirection = newDirection
+                        }
                     );
 
-                    Snakes[n] = s;
+                    Snakes[n].HeadDirection = newDirection;
 
                     // Place another food for the extra snake
                     Food.Add(SpawnFood(0, 0));
@@ -639,15 +669,15 @@ public class GameState(Window window)
                         (Snakes[n].HeadDirection == Snake.Direction.Up))
                         break;
 
-                    Snakes[n].TurnSegments.Add(
-                        new TurnSegment((uint)Snakes[n].X,
-                            (uint)Snakes[n].Y,
-                            Snakes[n].HeadDirection,
-                            Snake.Direction.Up));
+                    Snakes[n].TurnSegments.Add(new TurnSegment
+                    {
+                        X = (uint)Snakes[n].X,
+                        Y = (uint)Snakes[n].Y,
+                        FromDirection = Snakes[n].HeadDirection,
+                        ToDirection = Snake.Direction.Up
+                    });
 
-                    s = Snakes[n];
-                    s.HeadDirection = Snake.Direction.Up;
-                    Snakes[n] = s;
+                    Snakes[n].HeadDirection = Snake.Direction.Up;
                     break;
 
                 case SDL_SCANCODE_S:
@@ -655,13 +685,15 @@ public class GameState(Window window)
                         (Snakes[n].HeadDirection == Snake.Direction.Down))
                         break;
 
-                    Snakes[n].TurnSegments.Add(new TurnSegment((uint)Snakes[n].X, (uint)Snakes[n].Y,
-                        Snakes[n].HeadDirection,
-                        Snake.Direction.Down));
+                    Snakes[n].TurnSegments.Add(new TurnSegment
+                    {
+                        X = (uint)Snakes[n].X,
+                        Y = (uint)Snakes[n].Y,
+                        FromDirection = Snakes[n].HeadDirection,
+                        ToDirection = Snake.Direction.Down
+                    });
 
-                    s = Snakes[n];
-                    s.HeadDirection = Snake.Direction.Down;
-                    Snakes[n] = s;
+                    Snakes[n].HeadDirection = Snake.Direction.Down;
                     break;
 
                 case SDL_SCANCODE_A:
@@ -669,13 +701,15 @@ public class GameState(Window window)
                         (Snakes[n].HeadDirection == Snake.Direction.Left))
                         break;
 
-                    Snakes[n].TurnSegments.Add(new TurnSegment((uint)Snakes[n].X, (uint)Snakes[n].Y,
-                        Snakes[n].HeadDirection,
-                        Snake.Direction.Left));
+                    Snakes[n].TurnSegments.Add(new TurnSegment
+                    {
+                        X = (uint)Snakes[n].X,
+                        Y = (uint)Snakes[n].Y,
+                        FromDirection = Snakes[n].HeadDirection,
+                        ToDirection = Snake.Direction.Left
+                    });
 
-                    s = Snakes[n];
-                    s.HeadDirection = Snake.Direction.Left;
-                    Snakes[n] = s;
+                    Snakes[n].HeadDirection = Snake.Direction.Left;
                     break;
 
                 case SDL_SCANCODE_D:
@@ -683,19 +717,21 @@ public class GameState(Window window)
                         (Snakes[n].HeadDirection == Snake.Direction.Right))
                         break;
 
-                    Snakes[n].TurnSegments.Add(new TurnSegment((uint)Snakes[n].X, (uint)Snakes[n].Y,
-                        Snakes[n].HeadDirection,
-                        Snake.Direction.Right));
+                    Snakes[n].TurnSegments.Add(new TurnSegment
+                    {
+                        X = (uint)Snakes[n].X,
+                        Y = (uint)Snakes[n].Y,
+                        FromDirection = Snakes[n].HeadDirection,
+                        ToDirection = Snake.Direction.Right
+                    });
 
-                    s = Snakes[n];
-                    s.HeadDirection = Snake.Direction.Right;
-                    Snakes[n] = s;
+                    Snakes[n].HeadDirection = Snake.Direction.Right;
                     break;
             }
 
             l_skip_input:
 
-            Snakes[n] = MoveSnake(Snakes[n].HeadDirection, Snakes[n], .5F);
+            Snakes[n] = MoveSnake(Snakes[n].HeadDirection, Snakes[n]);
             Snakes[n] = CleanTurnsegments(Snakes[n]);
         }
 

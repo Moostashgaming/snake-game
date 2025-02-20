@@ -16,7 +16,6 @@
             GameState gameState = new GameState(window);
 
             gameState.Snakes.Add(gameState.SpawnSnake(2));
-            gameState.Snakes.Add(gameState.SpawnSnake(2));
             gameState.Food.Add(gameState.SpawnFood(0, 0));
             
             l_pause:
