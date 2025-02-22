@@ -91,12 +91,12 @@ public class SDLHelpers
         // Clear render surface
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
         SDL_RenderClear(renderer);
-
-        DrawGrid(window, renderer);
+        
+        DrawGrid(window, renderer, gameState);
 
         foreach (Snake s in gameState.Snakes)
         {
-            DrawSnake(window, renderer, s);
+            DrawSnake(window, renderer, s, gameState);
 
             // foreach (TurnSegment t in s.TurnSegments)
             // {
@@ -113,10 +113,7 @@ public class SDLHelpers
         }
 
         foreach (Food f in gameState.Food)
-            DrawFood(window, renderer, f);
-        
-       
-
+            DrawFood(window, renderer, f, gameState);
 
         // Update render surface
         SDL_RenderPresent(renderer);
@@ -129,10 +126,13 @@ public class SDLHelpers
         SDL_Quit();
     }
 
-    private static void DrawGrid(Window window, IntPtr renderer)
+    private static void DrawGrid(Window window, IntPtr renderer, GameState gameState)
     {
-        SDL_SetRenderDrawColor(renderer, 125, 125, 125, 255);
-
+        if (!gameState.Paused)
+            SDL_SetRenderDrawColor(renderer, 125, 125, 125, 255);
+        else
+            SDL_SetRenderDrawColor(renderer, 71, 71, 69, 255);
+        
         // Draw each square in the grid
         for (uint i = 0; i < (window.GridWidthHeight.Width); i++)
         for (uint j = 0; j < (window.GridWidthHeight.Height); j++)
@@ -157,7 +157,7 @@ public class SDLHelpers
         }
     }
 
-    private static void DrawSnake(Window window, IntPtr renderer, Snake snake)
+    private static void DrawSnake(Window window, IntPtr renderer, Snake snake, GameState gameState)
     {
         // Draw the snake's head
         var drawPart = new SDL_Rect()
@@ -168,8 +168,11 @@ public class SDLHelpers
             y = (int)(snake.Y * window.GridCellHeight) + window.GridOffsetY
         };
 
-        SDL_SetRenderDrawColor(renderer, 69, 178, 15, 255);
-
+        if (!gameState.Paused)
+            SDL_SetRenderDrawColor(renderer, 69, 178, 15, 255);
+        else
+            SDL_SetRenderDrawColor(renderer, 46, 114, 13, 255);
+        
         SDL_RenderFillRect(
             renderer,
             ref drawPart
@@ -177,6 +180,11 @@ public class SDLHelpers
 
         if (snake.Length < 2)
             return;
+        
+        if (!gameState.Paused)
+            SDL_SetRenderDrawColor(renderer, 48, 161, 56, 255);
+        else
+            SDL_SetRenderDrawColor(renderer, 39, 122, 43, 255);
         
         if (snake.TurnSegments.Count == 0)
         {
@@ -207,8 +215,6 @@ public class SDLHelpers
                 } * (window.GridCellHeight)) + (window.GridOffsetY)),
             };
             
-            SDL_SetRenderDrawColor(renderer, 48, 161, 56, 255);
-
             SDL_RenderFillRect(
                 renderer,
                 ref drawPart
@@ -250,7 +256,6 @@ public class SDLHelpers
             } * window.GridCellHeight) + window.GridOffsetY),
         };
 
-        SDL_SetRenderDrawColor(renderer, 48, 161, 56, 255);
 
         SDL_RenderFillRect(
             renderer,
@@ -292,9 +297,7 @@ public class SDLHelpers
                     _ => snake.TurnSegments[i].Y
                 } * window.GridCellHeight) + window.GridOffsetY),
             };
-
-            SDL_SetRenderDrawColor(renderer, 48, 161, 56, 255);
-
+            
             SDL_RenderFillRect(
                 renderer,
                 ref drawPart
@@ -328,15 +331,13 @@ public class SDLHelpers
             } * window.GridCellHeight) + window.GridOffsetY)
         };
         
-        SDL_SetRenderDrawColor(renderer, 48, 161, 56, 255);
-
         SDL_RenderFillRect(
             renderer,
             ref drawPart
         );
     }
 
-    private static void DrawFood(Window window, IntPtr renderer, Food food)
+    private static void DrawFood(Window window, IntPtr renderer, Food food, GameState gameState)
     {
         var foodRect = new SDL_Rect()
         {
@@ -348,9 +349,16 @@ public class SDLHelpers
         };
 
         if (food.Branching)
-            SDL_SetRenderDrawColor(renderer, 145, 44, 198, 255);
+            if (!gameState.Paused)
+                SDL_SetRenderDrawColor(renderer, 145, 44, 198, 255);
+            else
+                SDL_SetRenderDrawColor(renderer, 77, 24, 104, 255);
         else
-            SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
+            if (!gameState.Paused)
+                SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
+            else
+                SDL_SetRenderDrawColor(renderer, 179, 0, 0, 255);
+
 
         SDL_RenderFillRect(
             renderer,
